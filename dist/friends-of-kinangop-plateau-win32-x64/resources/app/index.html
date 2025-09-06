@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRIENDS OF KINANGOP PLATEAU</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>FRIENDS OF KINANGOP PLATEAU</h1>
+  </header>
+  <main>
+    <div class="main-buttons">
+      <button id="galleryBtn" class="main-btn">Gallery</button>
+      <button id="membersBtn" class="main-btn">Members</button>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div id="galleryModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeGallery">&times;</span>
+        <h2>Gallery</h2>
+        <div id="galleryImages" class="gallery-images"></div>
+        <button id="addImageBtn" class="fixed-btn">ADD NEW IMAGE</button>
+      </div>
+    </div>
+
+    <!-- Image Detail Modal -->
+    <div id="imageDetailModal" class="modal">
+      <div class="modal-content detail-content">
+        <span class="close" id="closeImageDetail">&times;</span>
+        <img id="detailImage" src="" alt="Image Detail" />
+        <div class="image-info">
+          <p><strong>Name:</strong> <span id="detailName"></span></p>
+          <p><strong>Date:</strong> <span id="detailDate"></span></p>
+          <p><strong>Time:</strong> <span id="detailTime"></span></p>
+          <p><strong>Location:</strong> <span id="detailLocation"></span></p>
+          <p><strong>Description:</strong> <span id="detailDescription"></span></p>
+          <p><strong>Photographer:</strong> <span id="detailPhotographer"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Image Modal -->
+    <div id="addImageModal" class="modal">
+      <div class="modal-content form-content">
+        <span class="close" id="closeAddImage">&times;</span>
+        <h2>Add New Image</h2>
+        <form id="addImageForm">
+          <label for="imageFile">Choose Image File:</label>
+          <input type="file" id="imageFile" accept="image/*" required />
+
+          <label for="imageName">Image Name:</label>
+          <input type="text" id="imageName" placeholder="Enter image name" required />
+
+          <label for="imageDate">Date Taken:</label>
+          <input type="date" id="imageDate" required />
+
+          <label for="imageTime">Time Taken:</label>
+          <input type="time" id="imageTime" required />
+
+          <label for="imageLocation">Location Taken:</label>
+          <input type="text" id="imageLocation" placeholder="Enter location" required />
+
+          <label for="imageDescription">Description:</label>
+          <textarea id="imageDescription" placeholder="Enter description" required></textarea>
+
+          <label for="imagePhotographer">Photographer Name:</label>
+          <input type="text" id="imagePhotographer" placeholder="Enter photographer's name" required />
+
+          <button type="submit" class="save-btn">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Members Modal -->
+    <div id="membersModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeMembers">&times;</span>
+        <h2>Members</h2>
+        <div id="membersList" class="members-list"></div>
+        <button id="addMemberBtn" class="fixed-btn">ADD NEW MEMBER</button>
+      </div>
+    </div>
+
+    <!-- Member Detail Modal -->
+    <div id="memberDetailModal" class="modal">
+      <div class="modal-content detail-content">
+        <span class="close" id="closeMemberDetail">&times;</span>
+        <img id="memberProfilePic" src="" alt="Member Profile" />
+        <div class="member-info">
+          <p><strong>Name:</strong> <span id="memberName"></span></p>
+          <p><strong>Phone:</strong> <span id="memberPhone"></span></p>
+          <p><strong>Email:</strong> <span id="memberEmail"></span></p>
+          <p><strong>Description:</strong> <span id="memberDescription"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add New Member Modal -->
+    <div id="addMemberModal" class="modal">
+      <div class="modal-content form-content">
+        <span class="close" id="closeAddMember">&times;</span>
+        <h2>Add New Member</h2>
+        <form id="addMemberForm">
+          <label for="memberProfileFile">Profile Picture:</label>
+          <input type="file" id="memberProfileFile" accept="image/*" required />
+
+          <label for="memberNameInput">Name:</label>
+          <input type="text" id="memberNameInput" placeholder="Enter member name" required />
+
+          <label for="memberPhoneInput">Phone Number:</label>
+          <input type="tel" id="memberPhoneInput" placeholder="Enter phone number" required />
+
+          <label for="memberEmailInput">Email:</label>
+          <input type="email" id="memberEmailInput" placeholder="Enter email" required />
+
+          <label for="memberDescriptionInput">Description:</label>
+          <textarea id="memberDescriptionInput" placeholder="Enter description" required></textarea>
+
+          <button type="submit" class="save-btn">Save</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Data storage
+    let images = [];
+    let members = [];
+
+    // Utility function to create alert on hover for main buttons
+    function addHoverAlert(button, message) {
+      // Removed alert on hover to prevent blocking click events
+      // You can replace this with a non-blocking tooltip if needed
+      button.addEventListener('mouseenter', () => {
+        // console.log(message);
+      });
+    }
+
+    // Main buttons
+    const galleryBtn = document.getElementById('galleryBtn');
+    const membersBtn = document.getElementById('membersBtn');
+
+    addHoverAlert(galleryBtn, 'Hover detected! Click for more information about the Gallery.');
+    addHoverAlert(membersBtn, 'Hover detected! Click for more information about the Members.');
+
+    // Modals
+    const galleryModal = document.getElementById('galleryModal');
+    const membersModal = document.getElementById('membersModal');
+    const imageDetailModal = document.getElementById('imageDetailModal');
+    const addImageModal = document.getElementById('addImageModal');
+    const memberDetailModal = document.getElementById('memberDetailModal');
+    const addMemberModal = document.getElementById('addMemberModal');
+
+    // Open modals
+    galleryBtn.addEventListener('click', () => {
+      renderGallery();
+      galleryModal.style.display = 'block';
+    });
+
+    membersBtn.addEventListener('click', () => {
+      renderMembers();
+      membersModal.style.display = 'block';
+    });
+
+    // Close buttons
+    document.getElementById('closeGallery').addEventListener('click', () => {
+      galleryModal.style.display = 'none';
+    });
+    document.getElementById('closeMembers').addEventListener('click', () => {
+      membersModal.style.display = 'none';
+    });
+    document.getElementById('closeImageDetail').addEventListener('click', () => {
+      imageDetailModal.style.display = 'none';
+    });
+    document.getElementById('closeAddImage').addEventListener('click', () => {
+      addImageModal.style.display = 'none';
+    });
+    document.getElementById('closeMemberDetail').addEventListener('click', () => {
+      memberDetailModal.style.display = 'none';
+    });
+    document.getElementById('closeAddMember').addEventListener('click', () => {
+      addMemberModal.style.display = 'none';
+    });
+
+    // Fixed buttons inside modals
+    document.getElementById('addImageBtn').addEventListener('click', () => {
+      addImageModal.style.display = 'block';
+    });
+
+    document.getElementById('addMemberBtn').addEventListener('click', () => {
+      addMemberModal.style.display = 'block';
+    });
+
+    // Render gallery images
+    function renderGallery() {
+      const galleryImages = document.getElementById('galleryImages');
+      galleryImages.innerHTML = '';
+      images.forEach((img, index) => {
+        const imgDiv = document.createElement('div');
+        imgDiv.classList.add('gallery-image');
+        imgDiv.style.border = '3px solid transparent';
+
+        const imageElement = document.createElement('img');
+        imageElement.src = img.dataUrl;
+        imageElement.alt = img.name;
+        imageElement.title = img.name;
+
+        const nameDiv = document.createElement('div');
+        nameDiv.classList.add('image-name');
+        nameDiv.textContent = img.name;
+
+        imgDiv.appendChild(imageElement);
+        imgDiv.appendChild(nameDiv);
+
+        // Hover border animation
+        imgDiv.addEventListener('mouseenter', () => {
+          imgDiv.classList.add('border-animate');
+        });
+        imgDiv.addEventListener('mouseleave', () => {
+          imgDiv.classList.remove('border-animate');
+        });
+
+        // Click to show detail
+        imgDiv.addEventListener('click', () => {
+          showImageDetail(index);
+        });
+
+        galleryImages.appendChild(imgDiv);
+      });
+    }
+
+    // Show image detail
+    function showImageDetail(index) {
+      const img = images[index];
+      document.getElementById('detailImage').src = img.dataUrl;
+      document.getElementById('detailName').textContent = img.name;
+      document.getElementById('detailDate').textContent = img.date;
+      document.getElementById('detailTime').textContent = img.time;
+      document.getElementById('detailLocation').textContent = img.location;
+      document.getElementById('detailDescription').textContent = img.description;
+      document.getElementById('detailPhotographer').textContent = img.photographer;
+      imageDetailModal.style.display = 'block';
+    }
+
+    // Add new image form submit
+    document.getElementById('addImageForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('imageFile');
+      const nameInput = document.getElementById('imageName');
+      const dateInput = document.getElementById('imageDate');
+      const timeInput = document.getElementById('imageTime');
+      const locationInput = document.getElementById('imageLocation');
+      const descriptionInput = document.getElementById('imageDescription');
+      const photographerInput = document.getElementById('imagePhotographer');
+
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select an image file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const dataUrl = event.target.result;
+        images.push({
+          dataUrl,
+          name: nameInput.value,
+          date: dateInput.value,
+          time: timeInput.value,
+          location: locationInput.value,
+          description: descriptionInput.value,
+          photographer: photographerInput.value
+        });
+        addImageModal.style.display = 'none';
+        document.getElementById('addImageForm').reset();
+        renderGallery();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Render members list
+    function renderMembers() {
+      const membersList = document.getElementById('membersList');
+      membersList.innerHTML = '';
+      members.forEach((member, index) => {
+        const memberDiv = document.createElement('div');
+        memberDiv.classList.add('member-item');
+
+        const profileImg = document.createElement('img');
+        profileImg.src = member.profileDataUrl;
+        profileImg.alt = member.name;
+        profileImg.classList.add('member-profile-pic');
+
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('member-info-summary');
+
+        const nameP = document.createElement('p');
+        nameP.textContent = member.name;
+
+        infoDiv.appendChild(nameP);
+        memberDiv.appendChild(profileImg);
+        memberDiv.appendChild(infoDiv);
+
+        // Click to show member detail
+        memberDiv.addEventListener('click', () => {
+          showMemberDetail(index);
+        });
+
+        membersList.appendChild(memberDiv);
+      });
+    }
+
+    // Show member detail
+    function showMemberDetail(index) {
+      const member = members[index];
+      document.getElementById('memberProfilePic').src = member.profileDataUrl;
+      document.getElementById('memberName').textContent = member.name;
+      document.getElementById('memberPhone').textContent = member.phone;
+      document.getElementById('memberEmail').textContent = member.email;
+      document.getElementById('memberDescription').textContent = member.description;
+      memberDetailModal.style.display = 'block';
+    }
+
+    // Add new member form submit
+    document.getElementById('addMemberForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const profileFileInput = document.getElementById('memberProfileFile');
+      const nameInput = document.getElementById('memberNameInput');
+      const phoneInput = document.getElementById('memberPhoneInput');
+      const emailInput = document.getElementById('memberEmailInput');
+      const descriptionInput = document.getElementById('memberDescriptionInput');
+
+      const file = profileFileInput.files[0];
+      if (!file) {
+        alert('Please select a profile picture.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const profileDataUrl = event.target.result;
+        members.push({
+          profileDataUrl,
+          name: nameInput.value,
+          phone: phoneInput.value,
+          email: emailInput.value,
+          description: descriptionInput.value
+        });
+        addMemberModal.style.display = 'none';
+        document.getElementById('addMemberForm').reset();
+        renderMembers();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Close modals when clicking outside modal content
+    window.addEventListener('click', (event) => {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
